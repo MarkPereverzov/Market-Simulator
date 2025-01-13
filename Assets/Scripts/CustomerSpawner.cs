@@ -6,7 +6,7 @@ public class CustomerSpawner : MonoBehaviour
     public Transform spawnArea;       // Область, где клиенты будут спавниться
     public float floorWidth = 10f;    // Ширина пола
     public float floorLength = 10f;   // Длина пола
-    public string storeSize = "medium"; // Размер магазина
+    public string storeSize = "small"; // Размер магазина
 
     private int maxCustomers;          // Максимальное количество клиентов
     private int currentCustomerCount = 0;

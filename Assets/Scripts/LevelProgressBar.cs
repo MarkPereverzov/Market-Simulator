@@ -52,7 +52,7 @@ public class LevelProgressBarTMP : MonoBehaviour
     private void UpdateUI()
     {
         // Обновляем текст уровня
-        levelText.text = $"Market Level: {currentLevel}";
+        levelText.text = $"Market Level {currentLevel}";
 
         // Обновляем текст опыта в формате "0/100"
         experienceText.text = $"{currentExperience}/{experienceToNextLevel}";
