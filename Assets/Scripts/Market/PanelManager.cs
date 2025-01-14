@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 
 public class PanelManager : MonoBehaviour
@@ -26,7 +26,7 @@ public class PanelManager : MonoBehaviour
         productsButton.onClick.AddListener(() => TogglePanel(productPanel, licensesPanel, improvementsPanel));
         improvementsButton.onClick.AddListener(() => TogglePanel(improvementsPanel, productPanel, licensesPanel));
 
-        UIManager.Instance.UpdateMoneyUI();  // Используем обновленный метод для отображения баланса
+        UIManager.Instance.UpdateMoneyUI();
     }
 
     void Update()
@@ -52,11 +52,11 @@ public class PanelManager : MonoBehaviour
         }
     }
 
-    // Переключение между панелями
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     void TogglePanel(GameObject panelToShow, GameObject panelToHide1, GameObject panelToHide2)
     {
-        panelToShow.SetActive(true);  // Показываем нужную панель
-        panelToHide1.SetActive(false); // Скрываем другую панель
-        panelToHide2.SetActive(false); // Скрываем третью панель
+        panelToShow.SetActive(true);
+        panelToHide1.SetActive(false);
+        panelToHide2.SetActive(false);
     }
 }

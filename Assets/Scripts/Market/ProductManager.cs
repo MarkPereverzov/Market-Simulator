@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -6,22 +6,22 @@ using System.Collections.Generic;
 public class ProductManager : MonoBehaviour
 {
     [Header("UI Text")]
-    public TextMeshProUGUI totalItemsText;  // Текст для отображения общего количества товаров
-    public TextMeshProUGUI totalPriceText;  // Текст для отображения общей суммы
+    public TextMeshProUGUI totalItemsText;
+    public TextMeshProUGUI totalPriceText;
 
     [Header("UI Buttons")]
-    public Button placeOrderButton;         // Кнопка "Place Order"
+    public Button placeOrderButton;
 
     [Header("Product")]
-    public GameObject productItemPrefab;    // Префаб для товара
-    public Transform contentParent;         // Контейнер товаров в ScrollView
+    public GameObject productItemPrefab;
+    public Transform contentParent;
 
     [Header("Product List")]
-    public Product[] products;              // Список доступных товаров
+    public Product[] products;
 
     [Header("Product Box")]
-    public Transform boxSpawnPoint;         // Точка спауна коробок
-    public GameObject boxPrefab;            // Префаб коробки
+    public Transform boxSpawnPoint;
+    public GameObject boxPrefab;
 
     private Dictionary<Product, int> productQuantities = new Dictionary<Product, int>();
 
@@ -30,11 +30,9 @@ public class ProductManager : MonoBehaviour
         PopulateProductList();
         UpdateTotal();
 
-        // Привязываем функцию PlaceOrder к кнопке
         placeOrderButton.onClick.AddListener(PlaceOrder);
     }
 
-    // Заполнение списка товаров
     void PopulateProductList()
     {
         foreach (var product in products)
@@ -61,8 +59,6 @@ public class ProductManager : MonoBehaviour
             subtractButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, -1));
         }
     }
-
-    // Изменение количества товара
     void ChangeQuantity(Product product, TextMeshProUGUI quantityText, int change)
     {
         productQuantities[product] += change;
@@ -75,8 +71,6 @@ public class ProductManager : MonoBehaviour
         quantityText.text = productQuantities[product].ToString();
         UpdateTotal();
     }
-
-    // Обновление общего количества товаров и общей суммы
     void UpdateTotal()
     {
         int totalItems = 0;
@@ -91,48 +85,36 @@ public class ProductManager : MonoBehaviour
         totalItemsText.text = $"Total Items: {totalItems}";
         totalPriceText.text = $"Total Price: ${totalPrice:F2}";
 
-        // Проверяем, можно ли оформить заказ
         placeOrderButton.interactable = totalPrice <= UIManager.Instance.GetCurrentMoney() && totalPrice > 0;
     }
-
-    // Покупка товаров (оформление заказа)
     void PlaceOrder()
     {
-        // Рассчитываем общую стоимость всех товаров
         float totalPrice = 0;
         foreach (var product in products)
         {
             totalPrice += productQuantities[product] * product.price;
         }
 
-        // Проверяем, хватает ли денег
         if (totalPrice > UIManager.Instance.GetCurrentMoney())
         {
             Debug.Log("Not enough money!");
-            return;  // Прерываем выполнение, если денег недостаточно
+            return;
         }
 
-        // Создаем коробки для всех товаров в корзине
         foreach (var product in products)
         {
             int quantity = productQuantities[product];
             for (int i = 0; i < quantity; i++)
             {
-                SpawnBox(product.productIcon);  // Создаем коробку с товаром
+                SpawnBox(product.productIcon);
             }
         }
 
-        // Списываем деньги с баланса игрока
         UIManager.Instance.SpendMoney(totalPrice);
-
-        // Сбрасываем количество товаров
         ResetQuantities();
-
-        // Обновляем UI
         UpdateTotal();
     }
 
-    // Спавн коробки
     void SpawnBox(Sprite productIcon)
     {
         GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
@@ -144,7 +126,6 @@ public class ProductManager : MonoBehaviour
         }
     }
 
-    // Сброс количеств товаров
     void ResetQuantities()
     {
         foreach (var product in products)
@@ -158,12 +139,4 @@ public class ProductManager : MonoBehaviour
             quantityText.text = "0";
         }
     }
-}
-
-[System.Serializable]
-public class Product
-{
-    public string productName;  // Имя продукта
-    public float price;         // Цена продукта
-    public Sprite productIcon;  // Иконка продукта
 }

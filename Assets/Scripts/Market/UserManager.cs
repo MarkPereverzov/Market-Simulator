@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -6,9 +6,9 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("UI Text")]
-    public TextMeshProUGUI moneyText;       // Текст для отображения текущих денег
+    public TextMeshProUGUI moneyText;
 
-    private float currentMoney = 100f;      // Стартовая сумма денег
+    private float currentMoney = 10000f;
 
     void Awake()
     {
@@ -22,37 +22,32 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Обновляем отображение денег
     public void UpdateMoneyUI()
     {
         moneyText.text = $"Money: ${currentMoney:F2}";
     }
 
-    // Метод для изменения текущего баланса
     public void ChangeMoney(float amount)
     {
         currentMoney += amount;
         UpdateMoneyUI();
     }
 
-    // Метод для вычитания денег (используется в ProductManager)
     public bool SpendMoney(float amount)
     {
         if (currentMoney >= amount)
         {
             currentMoney -= amount;
             UpdateMoneyUI();
-            return true;  // Успешное списание денег
+            return true;
         }
         else
         {
             Debug.LogWarning("Not enough money!");
-            return false;  // Недостаточно денег
+            return false;
         }
     }
 
-
-    // Получить текущий баланс
     public float GetCurrentMoney()
     {
         return currentMoney;

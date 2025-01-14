@@ -1,48 +1,77 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class LicensesManager : MonoBehaviour
 {
     [Header("UI Elements")]
-    public GameObject licenseItemPrefab;    // Префаб элемента лицензии
-    public Transform contentParent;         // Родительский объект для списка лицензий
+    public GameObject licenseItemPrefab;
+    public Transform contentParent;
 
     [Header("License List")]
-    public License[] licenses;              // Список доступных лицензий
+    public License[] licenses;
 
     void Start()
     {
         PopulateLicenseList();
     }
 
-    // Заполнение списка лицензий
     void PopulateLicenseList()
     {
         foreach (var license in licenses)
         {
             GameObject item = Instantiate(licenseItemPrefab, contentParent);
 
+            // РЈСЃС‚Р°РЅРѕРІРєР° РёРјРµРЅРё Рё С†РµРЅС‹ Р»РёС†РµРЅР·РёРё
             item.transform.Find("LicenseName").GetComponent<TextMeshProUGUI>().text = license.name;
             item.transform.Find("LicensePrice").GetComponent<TextMeshProUGUI>().text = $"${license.price:F2}";
 
-            Image licenseIcon = item.transform.Find("LicenseIcon").GetComponent<Image>();
-            if (license.icon != null)
-            {
-                licenseIcon.sprite = license.icon;
-            }
-
+            // РќР°СЃС‚СЂРѕР№РєР° РєРЅРѕРїРєРё РїРѕРєСѓРїРєРё
             Button buyButton = item.transform.Find("BuyButton").GetComponent<Button>();
-            buyButton.onClick.AddListener(() => PurchaseLicense(license));
+            TextMeshProUGUI buttonText = buyButton.GetComponentInChildren<TextMeshProUGUI>();
+
+            if (license.isPurchased)
+            {
+                buyButton.interactable = false; // РћС‚РєР»СЋС‡РёС‚СЊ РєРЅРѕРїРєСѓ
+                if (buttonText != null)
+                {
+                    buttonText.text = "Bought"; // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСЃС‚ "Bought"
+                }
+            }
+            else
+            {
+                buyButton.interactable = true; // Р’РєР»СЋС‡РёС‚СЊ РєРЅРѕРїРєСѓ
+                if (buttonText != null)
+                {
+                    buttonText.text = "Buy"; // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСЃС‚ "Buy"
+                }
+
+                // Р”РѕР±Р°РІРёС‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅР°Р¶Р°С‚РёСЏ РЅР° РєРЅРѕРїРєСѓ
+                buyButton.onClick.AddListener(() => PurchaseLicense(license, buyButton));
+            }
         }
     }
 
-    // Покупка лицензии
-    // Покупка лицензии
-    void PurchaseLicense(License license)
+    void PurchaseLicense(License license, Button buyButton)
     {
+        if (license.isPurchased)
+        {
+            Debug.Log($"License {license.name} is already purchased!");
+            return;
+        }
+
         if (UIManager.Instance.SpendMoney(license.price))
         {
+            license.isPurchased = true; // РћС‚РјРµС‚РёС‚СЊ РєР°Рє РєСѓРїР»РµРЅРЅСѓСЋ
+            buyButton.interactable = false; // РћС‚РєР»СЋС‡РёС‚СЊ РєРЅРѕРїРєСѓ
+
+            // РР·РјРµРЅРёС‚СЊ С‚РµРєСЃС‚ РєРЅРѕРїРєРё РЅР° "Bought"
+            TextMeshProUGUI buttonText = buyButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                buttonText.text = "Bought";
+            }
+
             Debug.Log($"License {license.name} purchased!");
         }
         else
@@ -50,13 +79,4 @@ public class LicensesManager : MonoBehaviour
             Debug.Log("Not enough money to purchase this license!");
         }
     }
-
-}
-
-[System.Serializable]
-public class License
-{
-    public string name;         // Название лицензии
-    public float price;         // Цена лицензии
-    public Sprite icon;         // Иконка лицензии
 }
