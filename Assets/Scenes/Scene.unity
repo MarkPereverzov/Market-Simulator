@@ -466,6 +466,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 159986717}
   m_CullTransparentMesh: 1
+--- !u!1 &175658154
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 175658155}
+  m_Layer: 0
+  m_Name: BoxSpawnpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &175658155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175658154}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 2, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &218568748
 GameObject:
   m_ObjectHideFlags: 0
@@ -752,6 +783,7 @@ GameObject:
   - component: {fileID: 297279344}
   - component: {fileID: 297279343}
   - component: {fileID: 297279345}
+  - component: {fileID: 297279346}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -835,7 +867,7 @@ MonoBehaviour:
   levelText: {fileID: 810368248}
   experienceText: {fileID: 233944013}
   experienceBar: {fileID: 1262276133}
-  currentLevel: 1
+  currentLevel: 0
   currentExperience: 0
   experienceToNextLevel: 100
   experienceGainInterval: 1
@@ -870,14 +902,43 @@ MonoBehaviour:
   totalItemsText: {fileID: 1093706552}
   totalPriceText: {fileID: 1455378342}
   productPanel: {fileID: 755917989}
+  placeOrderButton: {fileID: 360003536}
   closePanelButtonText: {fileID: 0}
   products:
-  - name: 1
+  - name: Cherry
+    price: 2.5
+    productIcon: {fileID: 21300000, guid: e797e21bc4e3bc641bebb63ab25e7c74, type: 3}
+  - name: Grapes
     price: 1
-  - name: 2
-    price: 2
-  - name: 3
+    productIcon: {fileID: 21300000, guid: f5825711416158e4b80a6e5a76a3177a, type: 3}
+  - name: Strawberry
     price: 3
+    productIcon: {fileID: 21300000, guid: 00087ed6772f1b44c987eefb84c0d28d, type: 3}
+  - name: Strawberry
+    price: 3
+    productIcon: {fileID: 21300000, guid: 2f1f6cf77bde07649b0164ebdfe8e750, type: 3}
+  - name: Carrot
+    price: 1.5
+    productIcon: {fileID: 21300000, guid: c02c61f681cfb19438ad8638f411af74, type: 3}
+  boxSpawnPoint: {fileID: 175658155}
+  boxPrefab: {fileID: 4422437309317390354, guid: 7755afd04683d254e917ebba9aecc778, type: 3}
+--- !u!114 &297279346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297279339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94290fee356ba1642b589af4702f4879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerPrefab: {fileID: 5967947843243425242, guid: 66c998ac3081b374ea9c513250cc818e, type: 3}
+  spawnArea: {fileID: 1495687153}
+  floorWidth: 10
+  floorLength: 10
+  storeSize: small
 --- !u!1 &360003534
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,7 +1332,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 159986718}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9378893
+  m_Size: 0.9999963
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1465,7 +1526,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 200, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &810368247
 CanvasRenderer:
@@ -2491,7 +2552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 10}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1276896811
@@ -2901,6 +2962,8 @@ GameObject:
   - component: {fileID: 1495687152}
   - component: {fileID: 1495687151}
   - component: {fileID: 1495687150}
+  - component: {fileID: 1495687154}
+  - component: {fileID: 1495687155}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -2953,7 +3016,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 81ce27f6cb02fb64fa5c2175e83f42ac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2992,12 +3055,60 @@ Transform:
   m_GameObject: {fileID: 1495687149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.7773807, y: -1.4721645, z: -5.882193}
+  m_LocalPosition: {x: 10, y: 0, z: 10}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1495687154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495687149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5510799551b3ce345b69d5dfd70e6ca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSize: 1
+  gridWidth: 20
+  gridLength: 20
+  gridColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!114 &1495687155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495687149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 849e949d46c4f3a42994ab153770cadc, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1604582194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3277,7 +3388,7 @@ Transform:
   m_GameObject: {fileID: 1659545657}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 0, z: -15}
+  m_LocalPosition: {x: 10, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3528,7 +3639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00015824943}
+  m_AnchoredPosition: {x: 0, y: 0.00007414258}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2053721624
@@ -3638,3 +3749,4 @@ SceneRoots:
   - {fileID: 1659545662}
   - {fileID: 973588115}
   - {fileID: 297279342}
+  - {fileID: 175658155}

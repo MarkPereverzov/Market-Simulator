@@ -62,24 +62,35 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
 
+        // Определяем, может ли игрок бежать
         bool isRunning = Input.GetKey(KeyCode.LeftShift) && currentStamina > 0;
-        float speed = isRunning ? runSpeed : walkSpeed;
 
+        // Если игрок бежит, уменьшаем стамину
         if (isRunning)
         {
             currentStamina -= staminaDrainRate * Time.deltaTime;
-            if (!staminaPanel.activeSelf) staminaPanel.SetActive(true); // Show stamina panel when running
+            if (!staminaPanel.activeSelf) staminaPanel.SetActive(true); // Показываем панель стамины
         }
-        else if (currentStamina < maxStamina)
+        else
         {
-            currentStamina += staminaRecoveryRate * Time.deltaTime;
+            // Если не бежим, восстанавливаем стамину
+            if (currentStamina < maxStamina)
+            {
+                currentStamina += staminaRecoveryRate * Time.deltaTime;
+            }
         }
 
+        // Устанавливаем скорость движения
+        float speed = isRunning ? runSpeed : walkSpeed;
+
+        // Движение персонажа
         characterController.Move(move * speed * Time.deltaTime);
 
+        // Обновляем вертикальную скорость (гравитация)
         velocity.y += Physics.gravity.y * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
     }
+
 
     private void HandleMouseLook()
     {
