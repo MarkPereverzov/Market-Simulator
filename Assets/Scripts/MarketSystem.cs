@@ -5,71 +5,110 @@ using System.Collections.Generic;
 
 public class ProductManager : MonoBehaviour
 {
-    [Header("UI Elements")]
-    public GameObject productItemPrefab;  // Префаб для товара
-    public Transform contentParent;       // Контейнер товаров в ScrollView
-    public TextMeshProUGUI totalItemsText; // Текст для отображения общего количества товаров
-    public TextMeshProUGUI totalPriceText; // Текст для отображения общей суммы
-    public GameObject productPanel;       // Панель товаров
-    public Button placeOrderButton;       // Кнопка "Place Order"
-    public TMP_Text closePanelButtonText; // Текст на кнопке закрытия панели (если нужно)
+    [Header("UI Panels")]
+    public GameObject marketSystemPanel;    // Панель Market System
+    public GameObject productPanel;         // Панель товаров
+    public GameObject licensesPanel;        // Панель лицензий
 
-    [Header("Product Data")]
-    public Product[] products; // Список доступных товаров
+    [Header("UI Text")]
+    public TextMeshProUGUI totalItemsText;  // Текст для отображения общего количества товаров
+    public TextMeshProUGUI totalPriceText;  // Текст для отображения общей суммы
+    public TextMeshProUGUI moneyText;       // Текст для отображения текущих денег
 
-    [Header("Box Settings")]
-    public Transform boxSpawnPoint;       // Точка спауна коробок
-    public GameObject boxPrefab;          // Префаб коробки
+    [Header("UI Buttons")]
+    public Button licensesButton;           // Кнопка для отображения панели лицензий
+    public Button productsButton;           // Кнопка для отображения панели товаров
+    public Button placeOrderButton;         // Кнопка "Place Order"
+
+    [Header("Product")]
+    public GameObject productItemPrefab;    // Префаб для товара
+    public Transform contentParent;         // Контейнер товаров в ScrollView
+
+    [Header("Product List")]
+    public Product[] products;              // Список доступных товаров
+
+    [Header("Product Box")]
+    public Transform boxSpawnPoint;         // Точка спауна коробок
+    public GameObject boxPrefab;            // Префаб коробки
+
+
 
     private Dictionary<Product, int> productQuantities = new Dictionary<Product, int>();
+    private float currentMoney = 100f;    // Стартовая сумма денег
+    private bool isMarketSystemActive = false;  // Флаг для отслеживания состояния панели Market System
 
     void Start()
     {
         PopulateProductList();
         UpdateTotal();
+        UpdateMoneyUI();
 
-        // Скрываем панель товаров в начале
-        productPanel.SetActive(false);
+        marketSystemPanel.SetActive(false);
+        licensesPanel.SetActive(false);  // Изначально скрыть панель лицензий
 
-        // Привязываем обработчик к кнопке "Place Order"
         placeOrderButton.onClick.AddListener(PlaceOrder);
+
+        // Добавляем события для кнопок переключения панелей
+        licensesButton.onClick.AddListener(() => TogglePanel(licensesPanel, productPanel));
+        productsButton.onClick.AddListener(() => TogglePanel(productPanel, licensesPanel));
     }
 
     void Update()
     {
-        // Открытие/закрытие панели по нажатию клавиши B
+        // При нажатии на клавишу B отображаем/скрываем панель Market System
         if (Input.GetKeyDown(KeyCode.B))
         {
-            ToggleProductPanel();
+            ToggleMarketSystemPanel();
         }
     }
 
+    // Переключение состояния панели Market System
+    void ToggleMarketSystemPanel()
+    {
+        isMarketSystemActive = !isMarketSystemActive;  // Инвертируем состояние флага
+        marketSystemPanel.SetActive(isMarketSystemActive); // Показываем или скрываем панель
+
+        if (isMarketSystemActive)
+        {
+            // При активации Market System показываем продукты и скрываем лицензии
+            productPanel.SetActive(true);
+            licensesPanel.SetActive(false);
+        }
+        else
+        {
+            // При деактивации Market System скрываем все дочерние панели
+            productPanel.SetActive(false);
+            licensesPanel.SetActive(false);
+        }
+    }
+
+    // Функция для переключения между панелями
+    void TogglePanel(GameObject panelToShow, GameObject panelToHide)
+    {
+        panelToShow.SetActive(true);  // Показываем нужную панель
+        panelToHide.SetActive(false); // Скрываем другую панель
+    }
+
+    // Заполняем список товаров
     void PopulateProductList()
     {
         foreach (var product in products)
         {
-            // Создаём экземпляр префаба для товара
             GameObject item = Instantiate(productItemPrefab, contentParent);
 
-            // Устанавливаем название товара
             item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.name;
-
-            // Устанавливаем цену товара
             item.transform.Find("ProductPrice").GetComponent<TextMeshProUGUI>().text = $"${product.price:F2}";
 
-            // Устанавливаем картинку товара
             Image productIcon = item.transform.Find("ProductIcon").GetComponent<Image>();
             if (product.productIcon != null)
             {
                 productIcon.sprite = product.productIcon;
             }
 
-            // Инициализируем количество товара
             TextMeshProUGUI quantityText = item.transform.Find("QuantityText").GetComponent<TextMeshProUGUI>();
             quantityText.text = "0";
             productQuantities[product] = 0;
 
-            // Привязываем кнопки для добавления и уменьшения количества
             Button addButton = item.transform.Find("AddButton").GetComponent<Button>();
             Button subtractButton = item.transform.Find("SubtractButton").GetComponent<Button>();
 
@@ -78,6 +117,7 @@ public class ProductManager : MonoBehaviour
         }
     }
 
+    // Изменение количества товара
     void ChangeQuantity(Product product, TextMeshProUGUI quantityText, int change)
     {
         productQuantities[product] += change;
@@ -91,6 +131,7 @@ public class ProductManager : MonoBehaviour
         UpdateTotal();
     }
 
+    // Обновление общего количества товаров и общей суммы
     void UpdateTotal()
     {
         int totalItems = 0;
@@ -104,52 +145,54 @@ public class ProductManager : MonoBehaviour
 
         totalItemsText.text = $"Total Items: {totalItems}";
         totalPriceText.text = $"Total Price: ${totalPrice:F2}";
+
+        placeOrderButton.interactable = totalPrice <= currentMoney && totalPrice > 0;
     }
 
+    // Оформление заказа
     void PlaceOrder()
     {
+        float totalPrice = 0;
+        foreach (var product in products)
+        {
+            totalPrice += productQuantities[product] * product.price;
+        }
+
+        if (totalPrice > currentMoney)
+        {
+            return; // Не хватает денег на заказ
+        }
+
         foreach (var product in products)
         {
             int quantity = productQuantities[product];
 
-            // Спауним коробки для каждого купленного товара
             for (int i = 0; i < quantity; i++)
             {
                 SpawnBox(product.productIcon);
             }
         }
 
-        // После заказа сбрасываем количество товаров
+        currentMoney -= totalPrice;
+        UpdateMoneyUI();
+
         ResetQuantities();
         UpdateTotal();
-
-        Debug.Log("Order placed! Boxes have been spawned.");
     }
 
-
+    // Спавн коробки
     void SpawnBox(Sprite productIcon)
     {
-        Debug.Log("Attempting to spawn box...");
-
-        // Создание коробки
         GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
-
-        // Поиск BoxIcon внутри коробки
         Image boxIcon = box.GetComponentInChildren<Image>();
 
-        if (boxIcon == null)
+        if (boxIcon != null)
         {
-            Debug.LogError("BoxIcon Image component not found in the box prefab!");
-            return;
+            boxIcon.sprite = productIcon;
         }
-
-        // Установка иконки товара
-        boxIcon.sprite = productIcon;
-        Debug.Log("Box spawned with icon: " + productIcon.name);
     }
 
-
-
+    // Сброс количеств товаров
     void ResetQuantities()
     {
         foreach (var product in products)
@@ -157,7 +200,6 @@ public class ProductManager : MonoBehaviour
             productQuantities[product] = 0;
         }
 
-        // Обновляем UI
         foreach (Transform child in contentParent)
         {
             TextMeshProUGUI quantityText = child.Find("QuantityText").GetComponent<TextMeshProUGUI>();
@@ -165,10 +207,10 @@ public class ProductManager : MonoBehaviour
         }
     }
 
-    void ToggleProductPanel()
+    // Обновление отображения текущих денег
+    void UpdateMoneyUI()
     {
-        bool isActive = productPanel.activeSelf;
-        productPanel.SetActive(!isActive);
+        moneyText.text = $"Money: ${currentMoney:F2}";
     }
 }
 
