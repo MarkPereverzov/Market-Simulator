@@ -5,19 +5,11 @@ using System.Collections.Generic;
 
 public class ProductManager : MonoBehaviour
 {
-    [Header("UI Panels")]
-    public GameObject marketSystemPanel;    // Панель Market System
-    public GameObject productPanel;         // Панель товаров
-    public GameObject licensesPanel;        // Панель лицензий
-
     [Header("UI Text")]
     public TextMeshProUGUI totalItemsText;  // Текст для отображения общего количества товаров
     public TextMeshProUGUI totalPriceText;  // Текст для отображения общей суммы
-    public TextMeshProUGUI moneyText;       // Текст для отображения текущих денег
 
     [Header("UI Buttons")]
-    public Button licensesButton;           // Кнопка для отображения панели лицензий
-    public Button productsButton;           // Кнопка для отображения панели товаров
     public Button placeOrderButton;         // Кнопка "Place Order"
 
     [Header("Product")]
@@ -31,72 +23,25 @@ public class ProductManager : MonoBehaviour
     public Transform boxSpawnPoint;         // Точка спауна коробок
     public GameObject boxPrefab;            // Префаб коробки
 
-
-
     private Dictionary<Product, int> productQuantities = new Dictionary<Product, int>();
-    private float currentMoney = 100f;    // Стартовая сумма денег
-    private bool isMarketSystemActive = false;  // Флаг для отслеживания состояния панели Market System
 
     void Start()
     {
         PopulateProductList();
         UpdateTotal();
-        UpdateMoneyUI();
 
-        marketSystemPanel.SetActive(false);
-        licensesPanel.SetActive(false);  // Изначально скрыть панель лицензий
-
+        // Привязываем функцию PlaceOrder к кнопке
         placeOrderButton.onClick.AddListener(PlaceOrder);
-
-        // Добавляем события для кнопок переключения панелей
-        licensesButton.onClick.AddListener(() => TogglePanel(licensesPanel, productPanel));
-        productsButton.onClick.AddListener(() => TogglePanel(productPanel, licensesPanel));
     }
 
-    void Update()
-    {
-        // При нажатии на клавишу B отображаем/скрываем панель Market System
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            ToggleMarketSystemPanel();
-        }
-    }
-
-    // Переключение состояния панели Market System
-    void ToggleMarketSystemPanel()
-    {
-        isMarketSystemActive = !isMarketSystemActive;  // Инвертируем состояние флага
-        marketSystemPanel.SetActive(isMarketSystemActive); // Показываем или скрываем панель
-
-        if (isMarketSystemActive)
-        {
-            // При активации Market System показываем продукты и скрываем лицензии
-            productPanel.SetActive(true);
-            licensesPanel.SetActive(false);
-        }
-        else
-        {
-            // При деактивации Market System скрываем все дочерние панели
-            productPanel.SetActive(false);
-            licensesPanel.SetActive(false);
-        }
-    }
-
-    // Функция для переключения между панелями
-    void TogglePanel(GameObject panelToShow, GameObject panelToHide)
-    {
-        panelToShow.SetActive(true);  // Показываем нужную панель
-        panelToHide.SetActive(false); // Скрываем другую панель
-    }
-
-    // Заполняем список товаров
+    // Заполнение списка товаров
     void PopulateProductList()
     {
         foreach (var product in products)
         {
             GameObject item = Instantiate(productItemPrefab, contentParent);
 
-            item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.name;
+            item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.productName;
             item.transform.Find("ProductPrice").GetComponent<TextMeshProUGUI>().text = $"${product.price:F2}";
 
             Image productIcon = item.transform.Find("ProductIcon").GetComponent<Image>();
@@ -146,37 +91,44 @@ public class ProductManager : MonoBehaviour
         totalItemsText.text = $"Total Items: {totalItems}";
         totalPriceText.text = $"Total Price: ${totalPrice:F2}";
 
-        placeOrderButton.interactable = totalPrice <= currentMoney && totalPrice > 0;
+        // Проверяем, можно ли оформить заказ
+        placeOrderButton.interactable = totalPrice <= UIManager.Instance.GetCurrentMoney() && totalPrice > 0;
     }
 
-    // Оформление заказа
+    // Покупка товаров (оформление заказа)
     void PlaceOrder()
     {
+        // Рассчитываем общую стоимость всех товаров
         float totalPrice = 0;
         foreach (var product in products)
         {
             totalPrice += productQuantities[product] * product.price;
         }
 
-        if (totalPrice > currentMoney)
+        // Проверяем, хватает ли денег
+        if (totalPrice > UIManager.Instance.GetCurrentMoney())
         {
-            return; // Не хватает денег на заказ
+            Debug.Log("Not enough money!");
+            return;  // Прерываем выполнение, если денег недостаточно
         }
 
+        // Создаем коробки для всех товаров в корзине
         foreach (var product in products)
         {
             int quantity = productQuantities[product];
-
             for (int i = 0; i < quantity; i++)
             {
-                SpawnBox(product.productIcon);
+                SpawnBox(product.productIcon);  // Создаем коробку с товаром
             }
         }
 
-        currentMoney -= totalPrice;
-        UpdateMoneyUI();
+        // Списываем деньги с баланса игрока
+        UIManager.Instance.SpendMoney(totalPrice);
 
+        // Сбрасываем количество товаров
         ResetQuantities();
+
+        // Обновляем UI
         UpdateTotal();
     }
 
@@ -206,18 +158,12 @@ public class ProductManager : MonoBehaviour
             quantityText.text = "0";
         }
     }
-
-    // Обновление отображения текущих денег
-    void UpdateMoneyUI()
-    {
-        moneyText.text = $"Money: ${currentMoney:F2}";
-    }
 }
 
 [System.Serializable]
 public class Product
 {
-    public string name;
-    public float price;
-    public Sprite productIcon; // Иконка продукта
+    public string productName;  // Имя продукта
+    public float price;         // Цена продукта
+    public Sprite productIcon;  // Иконка продукта
 }
