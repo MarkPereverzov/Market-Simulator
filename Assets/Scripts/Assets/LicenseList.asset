@@ -16,12 +16,8 @@ MonoBehaviour:
   - id: 0
     name: Fruits
     price: 0
-    isPurchased: 1
+    isPurchased: 0
   - id: 1
     name: Vegetables
     price: 200
-    isPurchased: 1
-  - id: 2
-    name: Bread
-    price: 500
     isPurchased: 0
