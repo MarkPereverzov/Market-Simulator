@@ -8,7 +8,8 @@ public class UIManager : MonoBehaviour
     [Header("UI Text")]
     public TextMeshProUGUI moneyText;
 
-    private float currentMoney = 10000f;
+    [Header("User")]
+    public float currentMoney = 1000f;
 
     void Awake()
     {

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6500996647219934981}
   - component: {fileID: 2153995303002992069}
   m_Layer: 5
-  m_Name: ProductLocked
+  m_Name: Product Item Locked
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

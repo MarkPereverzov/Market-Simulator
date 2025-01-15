@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class ProductManager : MonoBehaviour
 {
@@ -14,16 +15,19 @@ public class ProductManager : MonoBehaviour
 
     [Header("Product")]
     public GameObject productItemPrefab;
+    public GameObject productItemLockedPrefab;
     public Transform contentParent;
 
-    [Header("Product List")]
-    public Product[] products;
+    [Header("Lists")]
+    public ProductList productList;
+    public LicenseList licenseList;
 
     [Header("Product Box")]
     public Transform boxSpawnPoint;
     public GameObject boxPrefab;
 
     private Dictionary<Product, int> productQuantities = new Dictionary<Product, int>();
+    private Dictionary<Product, GameObject> productItems = new Dictionary<Product, GameObject>();
 
     void Start()
     {
@@ -35,51 +39,129 @@ public class ProductManager : MonoBehaviour
 
     void PopulateProductList()
     {
-        foreach (var product in products)
+        foreach (var product in productList.products)
         {
-            GameObject item = Instantiate(productItemPrefab, contentParent);
-
-            item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.productName;
-            item.transform.Find("ProductPrice").GetComponent<TextMeshProUGUI>().text = $"${product.price:F2}";
-
-            Image productIcon = item.transform.Find("ProductIcon").GetComponent<Image>();
-            if (product.productIcon != null)
+            if (!productItems.ContainsKey(product))
             {
-                productIcon.sprite = product.productIcon;
+                GameObject item;
+
+                // Инициализируем количество товара
+                if (!productQuantities.ContainsKey(product))
+                {
+                    productQuantities[product] = 0;
+                }
+
+                if (product.isUnlocked)
+                {
+                    item = Instantiate(productItemPrefab, contentParent);
+                    ConfigureUnlockedProductItem(item, product);
+                }
+                else
+                {
+                    item = Instantiate(productItemLockedPrefab, contentParent);
+                    ConfigureLockedProductItem(item, product);
+                }
+
+                productItems[product] = item;
             }
-
-            TextMeshProUGUI quantityText = item.transform.Find("QuantityText").GetComponent<TextMeshProUGUI>();
-            quantityText.text = "0";
-            productQuantities[product] = 0;
-
-            Button addButton = item.transform.Find("AddButton").GetComponent<Button>();
-            Button subtractButton = item.transform.Find("SubtractButton").GetComponent<Button>();
-
-            addButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, 1));
-            subtractButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, -1));
+            else
+            {
+                UpdateProductItem(product);
+            }
         }
     }
-    void ChangeQuantity(Product product, TextMeshProUGUI quantityText, int change)
-    {
-        productQuantities[product] += change;
 
-        if (productQuantities[product] < 0)
+    void ConfigureUnlockedProductItem(GameObject item, Product product)
+    {
+        item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.productName;
+        item.transform.Find("ProductPrice").GetComponent<TextMeshProUGUI>().text = $"${product.price:F2}";
+
+        Image productIcon = item.transform.Find("ProductIcon").GetComponent<Image>();
+        if (product.productIcon != null)
         {
-            productQuantities[product] = 0;
+            productIcon.sprite = product.productIcon;
         }
 
+        TextMeshProUGUI quantityText = item.transform.Find("QuantityText").GetComponent<TextMeshProUGUI>();
+        quantityText.text = productQuantities[product].ToString();  // Убедитесь, что отображается правильное количество
+
+        Button addButton = item.transform.Find("AddButton").GetComponent<Button>();
+        Button subtractButton = item.transform.Find("SubtractButton").GetComponent<Button>();
+
+        addButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, 1));
+        subtractButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, -1));
+    }
+
+
+    void ConfigureLockedProductItem(GameObject item, Product product)
+    {
+        item.transform.Find("ProductName").GetComponent<TextMeshProUGUI>().text = product.productName;
+
+        // Дополнительная логика для заблокированных товаров
+    }
+    public void UpdateProductItem(Product product)
+    {
+        if (productItems.ContainsKey(product))
+        {
+            GameObject item = productItems[product];
+
+            if (product.isUnlocked)
+            {
+                Destroy(item); // Удаляем старый префаб
+                GameObject newItem = Instantiate(productItemPrefab, contentParent);
+                ConfigureUnlockedProductItem(newItem, product);
+                productItems[product] = newItem; // Обновляем ссылку
+            }
+        }
+    }
+
+    void ChangeQuantity(Product product, TextMeshProUGUI quantityText, int change)
+    {
+        // Проверка на наличие лицензии
+        if (product.requiredLicenseId != 0)
+        {
+            License requiredLicense = GetLicenseById(product.requiredLicenseId);
+            if (requiredLicense == null || !requiredLicense.isPurchased)
+            {
+                Debug.LogWarning($"License with ID {product.requiredLicenseId} is required to add this product.");
+                return;
+            }
+        }
+
+        // Обновление количества товара в словаре
+        productQuantities[product] = Mathf.Max(0, productQuantities[product] + change);
+
+        // Обновление текста в UI
         quantityText.text = productQuantities[product].ToString();
+
+        // Обновление общей суммы
         UpdateTotal();
+    }
+
+
+    License GetLicenseById(int id)
+    {
+        foreach (var license in licenseList.licenses)
+        {
+            if (license.id == id)
+            {
+                return license;
+            }
+        }
+        return null;
     }
     void UpdateTotal()
     {
         int totalItems = 0;
         float totalPrice = 0;
 
-        foreach (var product in products)
+        foreach (var product in productList.products)
         {
-            totalItems += productQuantities[product];
-            totalPrice += productQuantities[product] * product.price;
+            if (productQuantities.ContainsKey(product)) // Проверяем, что товар существует в корзине
+            {
+                totalItems += productQuantities[product];
+                totalPrice += productQuantities[product] * product.price;
+            }
         }
 
         totalItemsText.text = $"Total Items: {totalItems}";
@@ -87,10 +169,12 @@ public class ProductManager : MonoBehaviour
 
         placeOrderButton.interactable = totalPrice <= UIManager.Instance.GetCurrentMoney() && totalPrice > 0;
     }
+
+
     void PlaceOrder()
     {
         float totalPrice = 0;
-        foreach (var product in products)
+        foreach (var product in productList.products)
         {
             totalPrice += productQuantities[product] * product.price;
         }
@@ -101,7 +185,7 @@ public class ProductManager : MonoBehaviour
             return;
         }
 
-        foreach (var product in products)
+        foreach (var product in productList.products)
         {
             int quantity = productQuantities[product];
             for (int i = 0; i < quantity; i++)
@@ -128,7 +212,7 @@ public class ProductManager : MonoBehaviour
 
     void ResetQuantities()
     {
-        foreach (var product in products)
+        foreach (var product in productList.products)
         {
             productQuantities[product] = 0;
         }

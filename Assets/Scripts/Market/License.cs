@@ -1,9 +1,10 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 [System.Serializable]
 public class License
 {
-    public string name;       // Название лицензии
-    public float price;       // Цена лицензии
-    public bool isPurchased;  // Статус: куплена или нет
+    public int id; // РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р»РёС†РµРЅР·РёРё
+    public string name;
+    public float price;
+    public bool isPurchased;
 }

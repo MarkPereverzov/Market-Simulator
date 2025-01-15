@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.ComponentModel;
 
 public class LicensesManager : MonoBehaviour
 {
@@ -8,9 +9,12 @@ public class LicensesManager : MonoBehaviour
     public GameObject licenseItemPrefab;
     public Transform contentParent;
 
-    [Header("License List")]
-    public License[] licenses;
+    [Header("Lists")]
+    public ProductList productList;
+    public LicenseList licenseList;
 
+    [Header("Managers")]
+    public ProductManager productManager;
     void Start()
     {
         PopulateLicenseList();
@@ -18,7 +22,7 @@ public class LicensesManager : MonoBehaviour
 
     void PopulateLicenseList()
     {
-        foreach (var license in licenses)
+        foreach (var license in licenseList.licenses)
         {
             GameObject item = Instantiate(licenseItemPrefab, contentParent);
 
@@ -62,10 +66,9 @@ public class LicensesManager : MonoBehaviour
 
         if (UIManager.Instance.SpendMoney(license.price))
         {
-            license.isPurchased = true; // Отметить как купленную
-            buyButton.interactable = false; // Отключить кнопку
+            license.isPurchased = true;
+            buyButton.interactable = false;
 
-            // Изменить текст кнопки на "Bought"
             TextMeshProUGUI buttonText = buyButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
             {
@@ -73,10 +76,26 @@ public class LicensesManager : MonoBehaviour
             }
 
             Debug.Log($"License {license.name} purchased!");
+
+            // Разблокируем связанные товары
+            UnlockProducts(license.id);
         }
         else
         {
             Debug.Log("Not enough money to purchase this license!");
         }
     }
+
+    void UnlockProducts(int licenseId)
+    {
+        foreach (var product in productManager.productList.products)
+        {
+            if (product.requiredLicenseId == licenseId)
+            {
+                product.isUnlocked = true;
+                productManager.UpdateProductItem(product); // Обновляем отображение
+            }
+        }
+    }
+
 }
