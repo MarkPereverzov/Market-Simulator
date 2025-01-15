@@ -179,41 +179,90 @@ public class ProductManager : MonoBehaviour
     void PlaceOrder()
     {
         float totalPrice = 0;
+
+        // Подсчет общей стоимости заказа
         foreach (var product in productList.products)
         {
-            totalPrice += productQuantities[product] * product.price;
+            int boxCount = productQuantities[product]; // Количество коробок
+            totalPrice += boxCount * product.price; // Цена за коробки
         }
 
+        // Проверка, хватает ли денег
         if (totalPrice > UIManager.Instance.GetCurrentMoney())
         {
             Debug.Log("Not enough money!");
             return;
         }
 
+        // Создание коробок для каждого товара
         foreach (var product in productList.products)
         {
-            int quantity = productQuantities[product];
-            for (int i = 0; i < quantity; i++)
+            int boxCount = productQuantities[product];
+            if (boxCount > 0)
             {
-                SpawnBox(product.productIcon);
+                for (int i = 0; i < boxCount; i++)
+                {
+                    SpawnBox(product); // Создаем одну коробку
+                }
             }
         }
 
+        // Списание денег
         UIManager.Instance.SpendMoney(totalPrice);
+
+        // Сброс количества коробок
         ResetQuantities();
+
+        // Обновление UI
         UpdateTotal();
     }
 
-    void SpawnBox(Sprite productIcon)
+    void SpawnBox(Product product)
     {
         GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
-        Image boxIcon = box.GetComponentInChildren<Image>();
 
+        // Настройка отображения коробки
+        Image boxIcon = box.GetComponentInChildren<Image>();
         if (boxIcon != null)
         {
-            boxIcon.sprite = productIcon;
+            boxIcon.sprite = product.productIcon;
+        }
+
+        // Настройка текстовой информации о коробке
+        TextMeshProUGUI quantityText = box.GetComponentInChildren<TextMeshProUGUI>();
+        if (quantityText != null)
+        {
+            quantityText.text = $"{product.itemsPerBox} pcs"; // Просто отображаем, сколько товаров в коробке
         }
     }
+
+
+
+    void SpawnBox(Product product, int quantity)
+    {
+        GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
+
+        // Создаем объект Box с товаром и количеством
+        Box boxInfo = new Box(product, quantity);
+
+        // Обновляем визуальное отображение коробки
+        Image boxIcon = box.GetComponentInChildren<Image>();
+        if (boxIcon != null)
+        {
+            boxIcon.sprite = product.productIcon;
+        }
+
+        // Находим текстовое поле для отображения количества товара в коробке
+        TextMeshProUGUI quantityText = box.GetComponentInChildren<TextMeshProUGUI>();
+        if (quantityText != null)
+        {
+            // Отображаем количество товаров, которое содержится в коробке
+            quantityText.text = $"{product.itemsPerBox} pcs";
+        }
+    }
+
+
+
 
     void ResetQuantities()
     {
