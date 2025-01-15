@@ -9,4 +9,6 @@ public class Product
 
     public int requiredLicenseId;
     public bool isUnlocked;
+
+    public int itemsPerBox;
 }

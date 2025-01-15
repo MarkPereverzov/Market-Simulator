@@ -18,38 +18,46 @@ MonoBehaviour:
     productIcon: {fileID: 21300000, guid: e797e21bc4e3bc641bebb63ab25e7c74, type: 3}
     requiredLicenseId: 0
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Grapes
     price: 1.09
     productIcon: {fileID: 21300000, guid: f5825711416158e4b80a6e5a76a3177a, type: 3}
     requiredLicenseId: 0
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Banana
     price: 1.15
     productIcon: {fileID: 21300000, guid: 2f1f6cf77bde07649b0164ebdfe8e750, type: 3}
     requiredLicenseId: 0
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Strawberry
     price: 1.49
     productIcon: {fileID: 21300000, guid: 00087ed6772f1b44c987eefb84c0d28d, type: 3}
     requiredLicenseId: 0
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Carrot
     price: 1.99
     productIcon: {fileID: 21300000, guid: c02c61f681cfb19438ad8638f411af74, type: 3}
     requiredLicenseId: 1
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Cucumber
     price: 2.19
     productIcon: {fileID: 21300000, guid: ec05a5a400186cd4f827e50133d33429, type: 3}
     requiredLicenseId: 1
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Paprika
     price: 2.59
     productIcon: {fileID: 21300000, guid: 6b3e9b9f7aaef94409cf6f18b5755504, type: 3}
     requiredLicenseId: 1
     isUnlocked: 1
+    itemsPerBox: 6
   - productName: Eggplant
     price: 3
     productIcon: {fileID: 21300000, guid: 307fce4803309da41856c7a238ff6722, type: 3}
     requiredLicenseId: 1
     isUnlocked: 1
+    itemsPerBox: 6

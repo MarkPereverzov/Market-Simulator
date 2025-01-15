@@ -82,8 +82,12 @@ public class ProductManager : MonoBehaviour
             productIcon.sprite = product.productIcon;
         }
 
+        // Обновляем текст количества товаров в упаковке
+        TextMeshProUGUI quantityPerBoxText = item.transform.Find("ItemsPerBoxText").GetComponent<TextMeshProUGUI>();
+        quantityPerBoxText.text = $"{product.itemsPerBox} pcs";
+
         TextMeshProUGUI quantityText = item.transform.Find("QuantityText").GetComponent<TextMeshProUGUI>();
-        quantityText.text = productQuantities[product].ToString();  // Убедитесь, что отображается правильное количество
+        quantityText.text = productQuantities[product].ToString();
 
         Button addButton = item.transform.Find("AddButton").GetComponent<Button>();
         Button subtractButton = item.transform.Find("SubtractButton").GetComponent<Button>();
@@ -91,6 +95,7 @@ public class ProductManager : MonoBehaviour
         addButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, 1));
         subtractButton.onClick.AddListener(() => ChangeQuantity(product, quantityText, -1));
     }
+
 
 
     void ConfigureLockedProductItem(GameObject item, Product product)
