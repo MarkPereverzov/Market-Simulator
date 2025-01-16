@@ -15,13 +15,25 @@ public class PanelManager : MonoBehaviour
     public Button improvementsButton;
 
     private bool isMarketSystemActive = false;
+    private GamePauseManager gamePauseManager;
 
     void Start()
     {
+        // Ищем GamePauseManager в сцене
+        gamePauseManager = Object.FindFirstObjectByType<GamePauseManager>();
+
+        // Проверяем, был ли найден GamePauseManager
+        if (gamePauseManager == null)
+        {
+            Debug.LogError("GamePauseManager not found in the scene!");
+        }
+
+        // Изначально скрываем все панели
         marketSystemPanel.SetActive(false);
         licensesPanel.SetActive(false);
         improvementsPanel.SetActive(false);
 
+        // Назначаем обработчики кнопок
         licensesButton.onClick.AddListener(() => TogglePanel(licensesPanel, productPanel, improvementsPanel));
         productsButton.onClick.AddListener(() => TogglePanel(productPanel, licensesPanel, improvementsPanel));
         improvementsButton.onClick.AddListener(() => TogglePanel(improvementsPanel, productPanel, licensesPanel));
@@ -31,6 +43,7 @@ public class PanelManager : MonoBehaviour
 
     void Update()
     {
+        // Отслеживаем нажатие на клавишу B для открытия/закрытия панели
         if (Input.GetKeyDown(KeyCode.B))
         {
             ToggleMarketSystemPanel();
@@ -40,23 +53,33 @@ public class PanelManager : MonoBehaviour
     void ToggleMarketSystemPanel()
     {
         isMarketSystemActive = !isMarketSystemActive;
-        marketSystemPanel.SetActive(isMarketSystemActive);
 
         if (isMarketSystemActive)
         {
+            // Открытие панели
+            marketSystemPanel.SetActive(true);
+
+            // Включаем паузу через GamePauseManager
+            gamePauseManager?.TogglePause();
+
+            // При открытии включаем панель продуктов по умолчанию
             TogglePanel(productPanel, licensesPanel, improvementsPanel);
         }
         else
         {
+            // Закрытие панели
             marketSystemPanel.SetActive(false);
+
+            // Отключаем паузу через GamePauseManager
+            gamePauseManager?.TogglePause();
         }
     }
 
-    // ������������ ����� ��������
+    // Переключение видимости панелей
     void TogglePanel(GameObject panelToShow, GameObject panelToHide1, GameObject panelToHide2)
     {
-        panelToShow.SetActive(true);
-        panelToHide1.SetActive(false);
+        panelToShow.SetActive(true); // Показываем выбранную панель
+        panelToHide1.SetActive(false); // Скрываем остальные панели
         panelToHide2.SetActive(false);
     }
 }
