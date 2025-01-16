@@ -26,7 +26,7 @@ public class PanelManager : MonoBehaviour
         productsButton.onClick.AddListener(() => TogglePanel(productPanel, licensesPanel, improvementsPanel));
         improvementsButton.onClick.AddListener(() => TogglePanel(improvementsPanel, productPanel, licensesPanel));
 
-        UIManager.Instance.UpdateMoneyUI();
+        PlayerManager.Instance.UpdateMoneyUI();
     }
 
     void Update()

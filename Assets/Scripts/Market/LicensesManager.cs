@@ -64,7 +64,7 @@ public class LicensesManager : MonoBehaviour
             return;
         }
 
-        if (UIManager.Instance.SpendMoney(license.price))
+        if (PlayerManager.Instance.SpendMoney(license.price))
         {
             license.isPurchased = true;
             buyButton.interactable = false;

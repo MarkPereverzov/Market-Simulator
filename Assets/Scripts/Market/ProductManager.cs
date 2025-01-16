@@ -172,7 +172,7 @@ public class ProductManager : MonoBehaviour
         totalItemsText.text = $"Total Items: {totalItems}";
         totalPriceText.text = $"Total Price: ${totalPrice:F2}";
 
-        placeOrderButton.interactable = totalPrice <= UIManager.Instance.GetCurrentMoney() && totalPrice > 0;
+        placeOrderButton.interactable = totalPrice <= PlayerManager.Instance.GetCurrentMoney() && totalPrice > 0;
     }
 
 
@@ -188,7 +188,7 @@ public class ProductManager : MonoBehaviour
         }
 
         // Проверка, хватает ли денег
-        if (totalPrice > UIManager.Instance.GetCurrentMoney())
+        if (totalPrice > PlayerManager.Instance.GetCurrentMoney())
         {
             Debug.Log("Not enough money!");
             return;
@@ -208,7 +208,7 @@ public class ProductManager : MonoBehaviour
         }
 
         // Списание денег
-        UIManager.Instance.SpendMoney(totalPrice);
+        PlayerManager.Instance.SpendMoney(totalPrice);
 
         // Сброс количества коробок
         ResetQuantities();

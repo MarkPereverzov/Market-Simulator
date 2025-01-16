@@ -1,11 +1,7 @@
 using UnityEngine;
-using TMPro;
 
 public class DayManager : MonoBehaviour
 {
-    [Header("UI Elements")]
-    public TextMeshProUGUI dayText;  // Текст для отображения текущего дня
-    public TextMeshProUGUI timeText; // Текст для отображения текущего времени
 
     private int currentDay = 0;        // Текущий день
     private float timeInMinutes = 420; // Время в минутах (7:00 = 420 минут)
@@ -14,9 +10,11 @@ public class DayManager : MonoBehaviour
     private const int endMinutes = 1380;  // 23:00 = 1380 минут с начала дня
     private const int workingDayDuration = endMinutes - startMinutes; // 960 минут (16 часов)
 
+    private UIManager uiManager;
+
     void Start()
     {
-        // Отображаем начальный день и время
+        uiManager = Object.FindFirstObjectByType<UIManager>(); // Используем метод для поиска UIManager
         UpdateDayAndTimeUI();
     }
 
@@ -42,8 +40,7 @@ public class DayManager : MonoBehaviour
         int hours = (int)(timeInMinutes / 60);
         int minutes = (int)(timeInMinutes % 60);
 
-        // Форматируем и отображаем текст
-        dayText.text = $"Day {currentDay}";
-        timeText.text = $"{hours:00}:{minutes:00}";
+        // Передаем данные в UIManager
+        uiManager?.UpdateDayUI(currentDay, hours, minutes);
     }
 }

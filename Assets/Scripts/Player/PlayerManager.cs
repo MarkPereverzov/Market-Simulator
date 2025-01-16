@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
-using TMPro;
 
-public class UIManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
-    public static UIManager Instance;
-
-    [Header("UI Text")]
-    public TextMeshProUGUI moneyText;
+    public static PlayerManager Instance;
 
     [Header("User")]
     public float currentMoney = 1000f;
+
+    [Header("Player Level")]
+    public int currentLevel = 1;  // Начальный уровень игрока
+
+    private UIManager uiManager;
 
     void Awake()
     {
@@ -21,17 +22,19 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        uiManager = Object.FindFirstObjectByType<UIManager>(); // Используем новый метод для поиска UIManager
+    }
+
+    public void LevelUp()
+    {
+        currentLevel++;
+        uiManager?.UpdateLevelUI(currentLevel); // Обновляем только уровень в UI
     }
 
     public void UpdateMoneyUI()
     {
-        moneyText.text = $"Money: ${currentMoney:F2}";
-    }
-
-    public void ChangeMoney(float amount)
-    {
-        currentMoney += amount;
-        UpdateMoneyUI();
+        uiManager?.UpdateMoneyUI(currentMoney);
     }
 
     public bool SpendMoney(float amount)

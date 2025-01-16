@@ -1182,13 +1182,13 @@ GameObject:
   - component: {fileID: 297279341}
   - component: {fileID: 297279340}
   - component: {fileID: 297279344}
-  - component: {fileID: 297279343}
+  - component: {fileID: 297279355}
   - component: {fileID: 297279347}
   - component: {fileID: 297279349}
   - component: {fileID: 297279348}
   - component: {fileID: 297279350}
-  - component: {fileID: 297279351}
   - component: {fileID: 297279353}
+  - component: {fileID: 297279354}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1257,25 +1257,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &297279343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297279339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe94aec2ccfee614c8cd82fbbbdec002, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelText: {fileID: 810368248}
-  experienceText: {fileID: 233944013}
-  experienceBar: {fileID: 1262276133}
-  currentLevel: 0
-  currentExperience: 0
-  experienceToNextLevel: 100
-  experienceGainInterval: 1
 --- !u!114 &297279344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1288,8 +1269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc4f0bc703f6fb743b5ee2f399e84e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayText: {fileID: 106406919}
-  timeText: {fileID: 48249194}
 --- !u!114 &297279347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1302,8 +1281,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 010a473018bd6944d88ae7e03ee71ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moneyText: {fileID: 1374371301}
   currentMoney: 1000
+  currentLevel: 1
 --- !u!114 &297279348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1362,21 +1341,6 @@ MonoBehaviour:
   productList: {fileID: 11400000, guid: 0e11a11334ea8bf44ab7dabd04d20312, type: 2}
   licenseList: {fileID: 11400000, guid: bfa6af7e79f6c994e828e831c762f7e9, type: 2}
   productManager: {fileID: 297279348}
---- !u!114 &297279351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297279339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 179e807ce7859874d89ba4448f88f933, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shelfItemPrefab: {fileID: 6141532965885520622, guid: 397aef3682373724eadfa9c07b948c5a, type: 3}
-  shelfText: {fileID: 1474445060}
-  itemsOnShelf: 0
 --- !u!114 &297279353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,6 +1360,39 @@ MonoBehaviour:
   interactionPanel: {fileID: 1403254531}
   progressBarImage: {fileID: 255316866}
   interactionText: {fileID: 532044983}
+--- !u!114 &297279354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297279339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91995a423fce6724ba55ebd938a3c900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayText: {fileID: 106406919}
+  timeText: {fileID: 48249194}
+  moneyText: {fileID: 1374371301}
+  levelText: {fileID: 810368248}
+  experienceText: {fileID: 233944013}
+  experienceBar: {fileID: 1262276133}
+--- !u!114 &297279355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297279339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe94aec2ccfee614c8cd82fbbbdec002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentExperience: 0
+  experienceToNextLevel: 100
+  experienceGainInterval: 1
 --- !u!1 &360003534
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,7 +1934,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 159986718}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9996697
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2414,7 +2411,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0037992173}
+  m_AnchoredPosition: {x: 0, y: 0.00000919078}
   m_SizeDelta: {x: 0, y: 532.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &829005743
@@ -4666,7 +4663,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 256016410}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9997068
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4742,7 +4739,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0037992173}
+  m_AnchoredPosition: {x: 0, y: 0.00000919078}
   m_SizeDelta: {x: 0, y: 532.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1443778808
@@ -4980,17 +4977,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1458092755}
   m_CullTransparentMesh: 1
---- !u!114 &1474445060 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4448894323011543992, guid: 6d646edc5e45af84c9e2e1a76470963a, type: 3}
-  m_PrefabInstance: {fileID: 1113391771}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1495687149
 GameObject:
   m_ObjectHideFlags: 0
@@ -6231,7 +6217,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0037992173}
+  m_AnchoredPosition: {x: 0, y: 0.00000919078}
   m_SizeDelta: {x: 0, y: 532.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2053721624
@@ -6341,7 +6327,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 967796291}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9997068
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
