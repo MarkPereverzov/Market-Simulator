@@ -6,19 +6,16 @@ public class GamePauseManager : MonoBehaviour
 
     void Start()
     {
-        // Скрываем курсор при запуске игры
-        Cursor.lockState = CursorLockMode.Locked;  // Блокируем курсор
-        Cursor.visible = false;                    // Скрываем курсор
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    // Метод для переключения паузы
     public void TogglePause()
     {
         isPaused = !isPaused;
 
         if (isPaused)
         {
-            // Пауза: остановка времени, разблокировка курсора и управление персонажем
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -26,7 +23,6 @@ public class GamePauseManager : MonoBehaviour
         }
         else
         {
-            // Возобновление игры: восстановление времени, блокировка курсора и управление персонажем
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -34,7 +30,6 @@ public class GamePauseManager : MonoBehaviour
         }
     }
 
-    // Отключение управления персонажем
     private void DisablePlayerControls()
     {
         var playerController = Object.FindFirstObjectByType<PlayerController>();
@@ -43,8 +38,6 @@ public class GamePauseManager : MonoBehaviour
             playerController.enabled = false;
         }
     }
-
-    // Включение управления персонажем
     private void EnablePlayerControls()
     {
         var playerController = Object.FindFirstObjectByType<PlayerController>();
@@ -54,7 +47,6 @@ public class GamePauseManager : MonoBehaviour
         }
     }
 
-    // Метод для проверки текущего состояния паузы
     public bool IsPaused()
     {
         return isPaused;
