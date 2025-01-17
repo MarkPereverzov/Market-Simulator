@@ -1,7 +1,7 @@
 public class Box
 {
-    public Product product;  // Продукт, который содержится в коробке
-    public int quantity;     // Количество товаров в коробке
+    public Product product;
+    public int quantity;
 
     public Box(Product product, int quantity)
     {

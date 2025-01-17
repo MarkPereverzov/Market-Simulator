@@ -3,7 +3,7 @@
 [System.Serializable]
 public class License
 {
-    public int id; // Уникальный идентификатор лицензии
+    public int id;
     public string name;
     public float price;
     public bool isPurchased;
