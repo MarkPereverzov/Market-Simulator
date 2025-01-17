@@ -23,6 +23,7 @@ public class PackageView : MonoBehaviour
         if (_package == null)
         {
             Debug.LogWarning("ProductView: Product not initialized!");
+            return;
         }
     }
 }
