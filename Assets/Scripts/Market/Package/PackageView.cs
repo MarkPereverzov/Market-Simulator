@@ -3,13 +3,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PackageView : MonoBehaviour
+public class PackageView : MonoBehaviour, IInteractable
 {
     [SerializeField] private Package _package;
+    public Package Package { get => _package; }
 
     public void Init(Package package)
     {
         _package = package;
+        _package.OnPackagePropertyChanged += UpdateView;
         UpdateView();
     }
 
@@ -34,6 +36,20 @@ public class PackageView : MonoBehaviour
         {
             ProductViewManager.Instance.CreateProductView(_package.Product, transform.position);
         }
+        Destroy(gameObject);
+    }
+
+    public void Interact(PlayerController player)
+    {
+        if (player.CurrentState is FreeState)
+        {
+            Debug.Log("PickUP");
+            CommandManager.Instance.ExecuteCommand(new PickUpCommand(player, gameObject));
+        }
+    }
+
+    public void DestroyPackage()
+    {
         Destroy(gameObject);
     }
 }

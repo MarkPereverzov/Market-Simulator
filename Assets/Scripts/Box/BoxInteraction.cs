@@ -79,24 +79,24 @@ public class BoxInteraction : MonoBehaviour
         {
             interactionPanel.SetActive(true);
 
+            //if (Input.GetKey(KeyCode.E))
+            //{
+            //    holdTime += Time.deltaTime;
+
+            //    if (progressBarImage != null)
+            //    {
+            //        progressBarFill = holdTime / interactionTime;
+            //        progressBarImage.fillAmount = progressBarFill;
+            //    }
+
+            //    if (holdTime >= interactionTime)
+            //    {
+            //        PickUpBox();
+            //    }
+            //}
             if (Input.GetKey(KeyCode.E))
             {
-                holdTime += Time.deltaTime;
-
-                if (progressBarImage != null)
-                {
-                    progressBarFill = holdTime / interactionTime;
-                    progressBarImage.fillAmount = progressBarFill;
-                }
-
-                if (holdTime >= interactionTime)
-                {
-                    PickUpBox();
-                }
-            }
-            if (Input.GetKey(KeyCode.F))
-            {
-                interactionText.text = "F";
+                interactionText.text = "E";
                 holdTime += Time.deltaTime;
 
                 if (progressBarImage != null)

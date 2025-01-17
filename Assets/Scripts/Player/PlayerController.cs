@@ -20,15 +20,24 @@ public class PlayerController : MonoBehaviour
     [Header("Camera Settings")]
     public Transform cameraTransform;
     public float mouseSensitivity = 1f;   // Adjusted sensitivity (lower = less sensitive)
+    public Transform handPosition;
+
+    public float interactionTime = 1f;
 
     private CharacterController characterController;
     private Vector3 velocity;
     private float verticalRotation = 0f;
 
+    private float holdTime = 0;
+    public PlayerState CurrentState { get; private set; }
+    public GameObject HoldItem { get; set; } = null;
+
+
     private bool isCursorLocked = true;   // Tracks whether the cursor is locked
 
     void Start()
     {
+        SetState(new FreeState(this));
         characterController = GetComponent<CharacterController>();
         if (characterController == null)
         {
@@ -54,6 +63,43 @@ public class PlayerController : MonoBehaviour
         HandleMouseLook();
         HandleStamina();
         HandleCursorToggle();
+        CurrentState.HandleInput();
+    }
+
+    public void SetState(PlayerState newState)
+    {
+        CurrentState = newState;
+    }
+
+    //private void HandleInteraction(IInteractable interactable)
+    //{
+    //    if (Input.GetKey(KeyCode.E))
+    //    {
+    //        holdTime += Time.deltaTime;
+
+    //        if (holdTime >= interactionTime)
+    //        {
+    //            interactable.Interact(this);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        holdTime = 0f;
+    //    }
+    //}
+
+    public IInteractable FindInteractable()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // Проверяем, есть ли на объекте компонент, реализующий IInteractable
+            if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
+            {
+                return interactable;
+            }
+        }
+        return null;
     }
 
     private void HandleMovement()

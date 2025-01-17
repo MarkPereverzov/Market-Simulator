@@ -4,14 +4,11 @@ using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI.Table;
 using static UnityEngine.Rendering.ReloadAttribute;
 using System;
+using Unity.VisualScripting;
 
-public class ShelfView : MonoBehaviour
+public class ShelfView : MonoBehaviour, IInteractable
 {
-    [SerializeField] public Shelf Shelf { get; private set; }
-
-    //DEBUG ONLY !!!!!
-    [Header("Lists")]
-    [SerializeField] public ProductList productList;
+    [SerializeField] public Shelf Shelf { get; set; }
 
     [Header("Shelf Grid Settings")]
     [SerializeField] public int rows = 3; // Количество рядов
@@ -27,6 +24,7 @@ public class ShelfView : MonoBehaviour
         Shelf = shelf;
         Shelf.OnShelfCarryProductChanged += Shelf_OnShelfCarryProductChanged;
         Shelf.OnShelfContentChanged += Shelf_OnShelfContentChanged;
+
         //Инициализируем значения
         Shelf_OnShelfCarryProductChanged();
     }
@@ -37,6 +35,7 @@ public class ShelfView : MonoBehaviour
     }
     private void Shelf_OnShelfContentChanged()
     {
+        transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = Shelf.CurrentQuantity != 0 ? $"{Shelf.CurrentQuantity}/{Shelf.MaxQuantity}" : "Free";
         UpdateGrid();
     }
     private void InitializeGrid()
@@ -70,9 +69,6 @@ public class ShelfView : MonoBehaviour
             int row = i / columns;
             int col = i % columns;
 
-            Debug.Log(row);
-            Debug.Log(col);
-
             product.GetComponent<BoxCollider>().enabled = false;
             product.GetComponent<Rigidbody>().isKinematic = true;
             product.transform.parent = transform;
@@ -85,20 +81,24 @@ public class ShelfView : MonoBehaviour
     }
     void Start()
     {
-        //TEST
-        Product product = productList.products[6];
-        Shelf shelf = new Shelf(product);
-        Init(shelf);
-
-        for (int i = 0; i < 7; i++)
-        {
-            ProductView productView = ProductViewManager.Instance.CreateProductView(product);
-            Shelf.AddProduct(productView);
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public void Interact(PlayerController player)
+    {
+        Debug.Log("А ни чё тот факт что");
+        if (player.CurrentState is HoldingItemState)
+        {
+            Debug.Log("Unpack");
+            CommandManager.Instance.ExecuteCommand(new UnpackCommand(player, this));
+        }
+        else
+        {
+            Debug.Log("Хули тыкаешь");
+        }
     }
 }

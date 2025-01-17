@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,7 +8,9 @@ public class Package
     private int quantity;
 
     public Product Product { get => carriedProduct; }
-    public int Quantity { get => quantity; }
+    public int Quantity { get => quantity; set { quantity = value; OnPackagePropertyChanged?.Invoke(); } }
+
+    public event Action OnPackagePropertyChanged;
     public Package (Product carriedProduct, int quantity)
     {
         this.carriedProduct = carriedProduct;

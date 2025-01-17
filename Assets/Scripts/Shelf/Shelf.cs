@@ -61,4 +61,11 @@ public class Shelf
         Debug.LogWarning("Продукт не найден на полке!");
         return false;
     }
+    public bool ClearProducts()
+    {
+        ProductList.Clear();
+        Debug.Log($"Продукты удалённы с полки.");
+        OnShelfContentChanged?.Invoke(); // Вызов события
+        return true;
+    }
 }

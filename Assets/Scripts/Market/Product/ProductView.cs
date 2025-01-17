@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProductView : MonoBehaviour
+public class ProductView : MonoBehaviour, IInteractable
 {
     [SerializeField] private Product _product;
     public void Init(Product product)
@@ -22,6 +22,15 @@ public class ProductView : MonoBehaviour
         if (_product == null)
         {
             Debug.LogWarning("ProductView: Product not initialized!");
+        }
+    }
+
+    public void Interact(PlayerController player)
+    {
+        if (player.CurrentState is FreeState)
+        {
+            Debug.Log("PickUP");
+            CommandManager.Instance.ExecuteCommand(new PickUpCommand(player, gameObject));
         }
     }
 }
