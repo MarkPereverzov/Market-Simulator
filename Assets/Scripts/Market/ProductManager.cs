@@ -6,6 +6,9 @@ using Unity.VisualScripting;
 
 public class ProductManager : MonoBehaviour
 {
+    [Header("Package View Manager")]
+    [SerializeField] private PackageViewManager packageViewManager;
+
     [Header("UI Text")]
     public TextMeshProUGUI totalItemsText;
     public TextMeshProUGUI totalPriceText;
@@ -83,8 +86,8 @@ public class ProductManager : MonoBehaviour
         }
 
         // Обновляем текст количества товаров в упаковке
-        TextMeshProUGUI quantityPerBoxText = item.transform.Find("ItemsPerBoxText").GetComponent<TextMeshProUGUI>();
-        quantityPerBoxText.text = $"{product.itemsPerBox} pcs";
+        //TextMeshProUGUI quantityPerBoxText = item.transform.Find("ItemsPerBoxText").GetComponent<TextMeshProUGUI>();
+        //quantityPerBoxText.text = $"{product.itemsPerBox} pcs";
 
         TextMeshProUGUI quantityText = item.transform.Find("QuantityText").GetComponent<TextMeshProUGUI>();
         quantityText.text = productQuantities[product].ToString();
@@ -198,13 +201,7 @@ public class ProductManager : MonoBehaviour
         foreach (var product in productList.products)
         {
             int boxCount = productQuantities[product];
-            if (boxCount > 0)
-            {
-                for (int i = 0; i < boxCount; i++)
-                {
-                    SpawnBox(product); // Создаем одну коробку
-                }
-            }
+            SpawnBox(product, boxCount);
         }
 
         // Списание денег
@@ -216,54 +213,14 @@ public class ProductManager : MonoBehaviour
         // Обновление UI
         UpdateTotal();
     }
-
-    void SpawnBox(Product product)
-    {
-        GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
-
-        // Настройка отображения коробки
-        Image boxIcon = box.GetComponentInChildren<Image>();
-        if (boxIcon != null)
-        {
-            boxIcon.sprite = product.productIcon;
-        }
-
-        // Настройка текстовой информации о коробке
-        TextMeshProUGUI quantityText = box.GetComponentInChildren<TextMeshProUGUI>();
-        if (quantityText != null)
-        {
-            quantityText.text = $"{product.itemsPerBox} pcs"; // Просто отображаем, сколько товаров в коробке
-        }
-    }
-
-
-
     void SpawnBox(Product product, int quantity)
     {
-        GameObject box = Instantiate(boxPrefab, boxSpawnPoint.position, Quaternion.identity);
-
-        // Создаем объект Box с товаром и количеством
-        Box boxInfo = new Box(product, quantity);
-
-        // Обновляем визуальное отображение коробки
-        Image boxIcon = box.GetComponentInChildren<Image>();
-        if (boxIcon != null)
-        {
-            boxIcon.sprite = product.productIcon;
-        }
-
-        // Находим текстовое поле для отображения количества товара в коробке
-        TextMeshProUGUI quantityText = box.GetComponentInChildren<TextMeshProUGUI>();
-        if (quantityText != null)
-        {
-            // Отображаем количество товаров, которое содержится в коробке
-            quantityText.text = $"{product.itemsPerBox} pcs";
-        }
+        if (quantity == 0) return;
+ 
+        Package newPackage = new Package(product, quantity);
+        Debug.Log(newPackage);
+        packageViewManager.CreatePackageView(newPackage);
     }
-
-
-
-
     void ResetQuantities()
     {
         foreach (var product in productList.products)
