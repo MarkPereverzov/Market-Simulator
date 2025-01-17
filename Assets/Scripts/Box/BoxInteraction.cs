@@ -94,6 +94,22 @@ public class BoxInteraction : MonoBehaviour
                     PickUpBox();
                 }
             }
+            if (Input.GetKey(KeyCode.F))
+            {
+                interactionText.text = "F";
+                holdTime += Time.deltaTime;
+
+                if (progressBarImage != null)
+                {
+                    progressBarFill = holdTime / interactionTime;
+                    progressBarImage.fillAmount = progressBarFill;
+                }
+
+                if (holdTime >= interactionTime)
+                {
+                    UnPackBox();
+                }
+            }
             else
             {
                 ResetProgressBar();
@@ -155,6 +171,19 @@ public class BoxInteraction : MonoBehaviour
         currentBox.GetComponent<Rigidbody>().isKinematic = true;
         currentBox.transform.rotation = Quaternion.identity;
         ResetProgressBar();
+    }
+
+    void UnPackBox()
+    {
+        PackageView packageView = currentBox.GetComponent<PackageView>();
+        if (packageView != null)
+        {
+            packageView.Unpack();
+        }
+        else
+        {
+            Debug.Log("Prefab не имеет PackageView");
+        }
     }
 
     void PlaceBoxOnShelf()

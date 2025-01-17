@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
+
 
 public class ProductManager : MonoBehaviour
 {
@@ -179,7 +181,7 @@ public class ProductManager : MonoBehaviour
     }
 
 
-    void PlaceOrder()
+    async void PlaceOrder()
     {
         float totalPrice = 0;
 
@@ -202,6 +204,7 @@ public class ProductManager : MonoBehaviour
         {
             int boxCount = productQuantities[product];
             SpawnBox(product, boxCount);
+            await Task.Delay(300);
         }
 
         // Списание денег
